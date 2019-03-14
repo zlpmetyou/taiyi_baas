@@ -1,0 +1,48 @@
+PeerOrgs:
+- Domain: org4.xxx.com
+  Name: org4
+  Specs:
+    - Hostname: peer1
+    - Hostname: peer2
+    - Hostname: peer3
+  Users:
+    Count: 1
+
+OrdererOrgs:
+  # ---------------------------------------------------------------------------
+  # Orderer
+  # ---------------------------------------------------------------------------
+  - Name: Orderer
+    Domain: example.com
+
+    # ---------------------------------------------------------------------------
+    # "Specs" - See PeerOrgs below for complete description
+    # ---------------------------------------------------------------------------
+    Specs:
+      - Hostname: orderer
+  - Name : Orderer1
+    Domain: haha.com
+    Specs:
+      - Hostname: orderer
+      - Hostname: orderer1
+      - Hostname: orderer2
+
+#
+#- Domain: org2.xxx.com
+#  Name: org2
+#  Specs:
+#    - Hostname: peer1
+#    - Hostname: peer2
+#    - Hostname: peer3
+#  Users:
+#    Count: 1
+#
+#
+#- Domain: org3.xxx.com
+#  Name: org3
+#  Specs:
+#    - Hostname: peer1
+#    - Hostname: peer2
+#    - Hostname: peer3
+#  Users:
+#    Count: 1

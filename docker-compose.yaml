@@ -1,0 +1,87 @@
+# This compose file will deploy the services, and bootup a mongo server.
+
+# Copyright IBM Corp., All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+# Local `/opt/cello/mongo` will be used for the db storage.
+
+#  cello-nginx: proxy to access operator dashboard service, listen on 8080
+#  cello-operator-dashboard: dashboard service for operators
+#  cello-user-dashboard: user service of cello, listen on 8081
+#  engine: engine service of cello to provide RESTful APIs, listen on 80
+#  cello-mongo: mongo db
+
+version: '3.2'
+services:
+  mongo_test:
+    image: mongo:3.4.10
+    hostname: mongo_test
+    container_name: mongo_test
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+        reservations:
+          cpus: '0.10'
+          memory: 256M
+#    networks:
+#      - backend
+    expose:
+      - 27019
+    ports:
+      - 27019:27017
+    environment:
+      - NO_USED=0
+    volumes:
+      - /home/mongo_test:/data/db
+
+
+  baas_test:
+    image: python/baas:test
+    container_name: baas_test
+    hostname: baas_test
+    restart: unless-stopped
+#    networks:
+#      - backend
+    links:
+      - mongo_test
+#    external_links:
+#      - mongo_test
+    environment:
+      - MONGO_URL=mongodb://mongo_test:27019  # used by pymongo, deprecate soon
+      - MONGO_HOST=mongo
+      - MONGO_DB=dev
+      - MONGODB_PORT=27019
+      - DEBUG=True   # in debug mode, service will auto-restart
+      - LOG_LEVEL=DEBUG  # what level log will be output
+    ports:
+      - 8083:8080
+    volumes:  # This should be removed in product env
+#      - $ROOT_PATH/src/agent/docker/_compose_files:/cello
+      - /root/cello/src/agent/docker/_compose_files/baas_test:/app
+#    command: sh -c 'cd /app && if [ "$DEBUG" = "True" ]; then python dashboard.py ; else gunicorn -w 3 --worker-class eventlet -b 0.0.0.0:8080 dashboard:app ;fi'
+    command: sh -c 'cd /app && python dashboard.py'
+
+#networks:
+#  backend:
+#   mongo database, may use others in future
+
+
+#  nfs:
+#    image: itsthenetwork/nfs-server-alpine:9
+#    container_name: nfs
+#    restart: unless-stopped
+#    environment:
+#      - SHARED_DIRECTORY=/cello
+#      - SYNC=true
+#    ports:
+#      - 2049:2049
+#    volumes:
+#      - $ROOT_PATH/src/agent/docker/_compose_files:/cello
+#    privileged: true
+#networks:
+#  host:
+#    driver: bridge

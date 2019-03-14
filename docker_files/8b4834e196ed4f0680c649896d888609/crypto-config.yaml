@@ -1,0 +1,13 @@
+OrdererOrgs:
+- Domain: xxx.com
+  Name: Orderer
+  Specs:
+  - {Hostname: orderer}
+PeerOrgs:
+- CA: {Hostname: ca}
+  Domain: org1.xxx.com
+  Name: Org1
+  Template:
+    Count: 2
+    SANS: [localhost]
+  Users: {Count: 1}

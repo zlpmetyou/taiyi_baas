@@ -1,0 +1,67 @@
+FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server,
+FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+
+FABRIC_CA_SERVER_CA_NAME=ca_peerOrg1,
+FABRIC_CA_SERVER_CA_NAME=ca_peerOrg1
+
+FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.domain-cert.pem,
+FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+
+FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/*_sk,
+FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c6f2705be38be4bd9dd418e4796ee2275ae7edf204eb2b3eb180046a7830a43c_sk
+
+FABRIC_CA_SERVER_TLS_ENABLED=false,
+FABRIC_CA_SERVER_TLS_ENABLED=false
+
+FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.domain-cert.pem,
+FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+
+FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/*_sk
+FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/c6f2705be38be4bd9dd418e4796ee2275ae7edf204eb2b3eb180046a7830a43c_sk
+
+
+ca.org1.domain:
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: e3ea671cf0774fe3a7f6ff184af48a6f_ca_org1
+    environment: [FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server, FABRIC_CA_SERVER_CA_NAME=ca_peerorg1,
+      FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.domain-cert.pem,
+      FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/*_sk, FABRIC_CA_SERVER_TLS_ENABLED=false,
+      FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.domain-cert.pem,
+      FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/*_sk]
+    image: hyperledger/fabric-ca:1.1.0
+    ports: ['8650:7054']
+    volumes: ['/opt/cello/baas_test/config_files/e3ea671cf0774fe3a7f6ff184af48a6f/crypto-config/peerOrganizations/org1.domain/ca/:/etc/hyperledger/fabric-ca-server-config']
+5bd82cc9e53c1c47c9f2618a0dc1cd11eeed8ed72fa0f73d7f443120d9688e3c
+5bd82cc9e53c1c47c9f2618a0dc1cd11eeed8ed72fa0f73d7f443120d9688e3c
+
+
+ca0:
+    image: hyperledger/fabric-ca:x86_64-1.1.0
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org1
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/ab2e8cc5908032f0d83556e5e4a6146218f313884fb42fbdb446a4b5b3d32baf_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/ab2e8cc5908032f0d83556e5e4a6146218f313884fb42fbdb446a4b5b3d32baf_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server/msp
+    container_name: ca_peerOrg1
+
+
+'${COMPOSE_PROJECT_PATH}/scripts:/tmp/scripts',
+'${COMPOSE_PROJECT_PATH}/095c26f9f7bb430a91fba73ffc48ae8b/crypto-config.yaml:/etc/hyperledger/fabric/crypto-config.yaml',
+'${COMPOSE_PROJECT_PATH}/095c26f9f7bb430a91fba73ffc48ae8b/crypto-config:/etc/hyperledger/fabric/crypto-config',
+'${COMPOSE_PROJECT_PATH}/095c26f9f7bb430a91fba73ffc48ae8b/configtx.yaml:/etc/hyperledger/fabric/configtx.yaml',
+'${COMPOSE_PROJECT_PATH}/095c26f9f7bb430a91fba73ffc48ae8b/channel-artifacts:/tmp/channel-artifacts'
+
+
+${COMPOSE_PROJECT_PATH}/scripts:/tmp/scripts
+- ${COMPOSE_PROJECT_PATH}/crypto-config.yaml:/etc/hyperledger/fabric/crypto-config.yaml
+- ${COMPOSE_PROJECT_PATH}/crypto-config:/etc/hyperledger/fabric/crypto-config
+- ${COMPOSE_PROJECT_PATH}/solo/configtx.yaml:/etc/hyperledger/fabric/configtx.yaml
+- ${COMPOSE_PROJECT_PATH}/solo/channel-artifacts:/tmp/channel-artifacts
+- ${COMPOSE_PROJECT_PATH}/examples:/opt/gopath/src/examples

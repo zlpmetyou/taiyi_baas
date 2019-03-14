@@ -1,0 +1,43 @@
+Application: {Organizations: null}
+Capabilities:
+  Application: {V1_1: false}
+  Global: {V1_1: true}
+  Orderer: {V1_1: true}
+Orderer:
+  Addresses: ['orderer.xxx.com:7050']
+  BatchSize: {AbsoluteMaxBytes: 98 MB, MaxMessageCount: 10, PreferredMaxBytes: 512
+      KB}
+  BatchTimeout: 2s
+  OrdererType: solo
+  Organizations: null
+Organizations:
+- &id003 {ID: OrdererMSP, MSPDir: crypto-config/ordererOrganizations/xxx.com/msp,
+  Name: OrdererOrg}
+- &id001
+  AnchorPeers:
+  - {Host: peer0.org1.xxx.com, Port: 7051}
+  ID: Org1MSP
+  MSPDir: crypto-config/peerOrganizations/org1.xxx.com/msp
+  Name: Org1MSP
+Profiles:
+  OneOrgsChannel:
+    Application:
+      Capabilities: {V1_1: false}
+      Organizations: &id002
+      - *id001
+      Resources: {DefaultModPolicy: /Channel/Application/Writers}
+    Consortium: SampleConsortium
+  OneOrgsOrdererGenesis:
+    Capabilities: {V1_1: true}
+    Consortiums:
+      SampleConsortium:
+        Organizations: *id002
+    Orderer:
+      Addresses: ['orderer.xxx.com:7050']
+      BatchSize: {AbsoluteMaxBytes: 98 MB, MaxMessageCount: 10, PreferredMaxBytes: 512
+          KB}
+      BatchTimeout: 2s
+      Capabilities: {V1_1: true}
+      OrdererType: solo
+      Organizations:
+      - *id003

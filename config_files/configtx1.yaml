@@ -1,0 +1,141 @@
+---
+Profiles:
+
+    TwoOrgsOrdererGenesis:
+        Capabilities:
+            <<: *ChannelCapabilities
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+            Capabilities:
+                <<: *OrdererCapabilities
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *Org1
+                    - *Org2
+    TwoOrgsChannel:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Org1
+                - *Org2
+            Capabilities:
+                <<: *ApplicationCapabilities
+Organizations:
+    - &OrdererOrg
+        Name: OrdererOrg
+        ID: OrdererMSP
+        MSPDir: crypto-config/ordererOrganizations/example.com/msp
+
+    - &Org1
+        Name: Org1MSP
+        ID: Org1MSP
+        MSPDir: crypto-config/peerOrganizations/org1.example.com/msp
+        AnchorPeers:
+            - Host: peer0.org1.example.com
+              Port: 7051
+
+    - &Org2
+        Name: Org2MSP
+        ID: Org2MSP
+        MSPDir: crypto-config/peerOrganizations/org2.example.com/msp
+        AnchorPeers:
+            - Host: peer0.org2.example.com
+              Port: 7051
+
+Orderer: &OrdererDefaults
+    OrdererType: solo
+    Addresses:
+        - orderer.example.com:7050
+
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 98 MB
+
+        PreferredMaxBytes: 512 KB
+
+    Kafka:
+        Brokers:
+            - kafka0:9092
+            - kafka1:9092
+            - kafka2:9092
+            - kafka3:9092
+
+    Organizations:
+
+Application: &ApplicationDefaults
+    Organizations:
+Capabilities:
+    Global: &ChannelCapabilities
+        V1_1: true
+
+    Orderer: &OrdererCapabilities
+        V1_1: true
+
+    Application: &ApplicationCapabilities
+        V1_1: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PROJECT_VERSION=1.1.0,
+'CTL_IMG=yeasy/hyperledger-fabric:1.1.0',
+CTL_CONTAINER=configtxlator,
+'CTL_BASE_URL=http://127.0.0.1:7059',
+'CTL_ENCODE_URL=http://127.0.0.1:7059/protolator/encode',
+'CTL_DECODE_URL=http://127.0.0.1:7059/protolator/decode',
+'CTL_COMPARE_URL=http://127.0.0.1:7059/configtxlator/compute/update-from-configs',
+ORDERER_TLS_CA=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/bb.com/orderers/orderer.bb.com/msp/tlscacerts/tlsca.bb.com-cert.pem,
+ORDERER_MSP=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/bb.com/orderers/orderer.bb.com/msp,
+ORDERER_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/bb.com/orderers/orderer.bb.com/tls/ca.crt,
+ORDERER_ADMIN_MSP=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/bb.com/users/Admin@bb.com/msp,
+'ORDERER_URL=orderer.bb.com:7050',
+ORDERER_GENESIS=orderer.genesis.block,
+DD_PEER0_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/peerOrganizations/dd..bb.com/peers/peer0.dd.bb.com/tls/ca.crt,
+'DD_PEER0_URL=peer0.dd.bb.com:7051',
+DD_PEER1_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/peerOrganizations/dd..bb.com/peers/peer1.dd.bb.com/tls/ca.crt,
+'DD_PEER1_URL=peer1.dd.bb.com:7051',
+5C3D4C2D957089000E5EBAC0_ADMIN_MSP=/etc/hyperledger/fabric/crypto-config/peerOrganizations/5c3d4c2d957089000e5ebac0.bb.com/users/Admin@5c3d4c2d957089000e5ebac0.bb.com/msp,
+5C3D4C2D957089000E5EBAC0MSP=5c3d4c2d957089000e5ebac0MSP,
+UPDATE_ANCHOR_5C3D4C2D957089000E5EBAC0_TX=5c3d4c2d957089000e5ebac0MSPanchors.tx,
+ORDERER_PROFILE=OrdererGenesis,
+ORGS=dd,
+AA_CREATE_ORG=dd,
+AA_CREATE_PEER=peer0,
+AA_ORGS=dd,
+APP_CHANNELS=aa,
+'DD=peer0,peer1']

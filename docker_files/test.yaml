@@ -1,0 +1,55 @@
+version: '3.2'
+services:
+  hha:
+    image: ubuntu
+    container_name: test2
+    command: sh -c 'sleep 5000000'
+#    networks:
+#      - backend
+#  operator-dashboard:
+#    image: hyperledger/cello-operator-dashboard
+#    container_name: cello-operator-dashboard
+#    hostname: cello-operator-dashboard
+#    restart: unless-stopped
+#    environment:
+#      - MONGO_URL=mongodb://cello-mongo:27017  # used by pymongo, deprecate soon
+#      - MONGO_HOST=mongo
+#      - MONGO_DB=dev
+#      - MONGODB_PORT=27017
+#      - DEBUG=False    # in debug mode, service will auto-restart
+#      - LOG_LEVEL=$LOG_LEVEL  # what level log will be output
+#      - STATIC_FOLDER=$STATIC_FOLDER
+#      - TEMPLATE_FOLDER=$TEMPLATE_FOLDER
+#      - ENABLE_EMAIL_ACTIVE=$ENABLE_EMAIL_ACTIVE
+#      - BROKER=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/$RABBITMQ_DEFAULT_VHOST
+#      - BACKEND=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/$RABBITMQ_DEFAULT_VHOST
+#    ports:
+#      - "8080:8080"
+#    volumes:
+#      - $ROOT_PATH/src/agent/docker/_compose_files:/cello
+#
+#  mongo:
+#    image: mongo:3.4.10
+#    hostname: cello-mongo
+#    container_name: cello-mongo
+#    restart: unless-stopped
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.50'
+#          memory: 2048M
+#        reservations:
+#          cpus: '0.10'
+#          memory: 256M
+#    ports:
+#      #- "27017:27017"  # use follow line instead in production env
+#      - "127.0.0.1:27017:27017"
+#      - "127.0.0.1:27018:27018"
+#    environment:
+#      - NO_USED=0
+#    volumes:
+#      - /opt/cello/mongo:/data/db
+
+#networks:
+#  default:
+

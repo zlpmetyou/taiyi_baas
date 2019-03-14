@@ -1,0 +1,95 @@
+services:
+  ca.org1.xxx.com:
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    container_name: 8b4834e196ed4f0680c649896d888609_ca_org1
+    environment: [FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server, FABRIC_CA_SERVER_CA_NAME=ca_peerOrg1,
+      FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.xxx.com-cert.pem,
+      FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7e27306975ff216311f96e98ba377350a44bb4028eb4bd07799cd020cc055485_sk,
+      FABRIC_CA_SERVER_TLS_ENABLED=false, FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.xxx.com-cert.pem,
+      FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/7e27306975ff216311f96e98ba377350a44bb4028eb4bd07799cd020cc055485_sk]
+    image: hyperledger/fabric-ca:1.1.0
+    ports: ['7450:7054']
+    volumes: ['${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/peerOrganizations/org1.xxx.com/ca/:/etc/hyperledger/fabric-ca-server-config']
+  cli:
+    command: bash -c 'sleep 5; cd /tmp; bash scripts/check_port.sh 172.31.239.245:7550
+      172.31.239.245:7150 172.31.239.245:7350 172.31.239.245:7250 172.31.239.245:7450
+      172.31.239.245:7050; source scripts/func_new.sh; bash scripts/channel_create.sh;
+      bash scripts/channel_join.sh; while true; do sleep 20180101; done'
+    container_name: 8b4834e196ed4f0680c649896d888609_cli
+    depends_on: [orderer.xxx.com, peer1.org1.xxx.com, peer0.org1.xxx.com]
+    environment: [CORE_LOGGING_LEVEL=DEBUG, 'CORE_LOGGING_FORMAT=%{color}[%{id:03x}
+        %{time:01-02 15:04:05.00 MST}] [%{longpkg}] %{callpath} -> %{level:.4s}%{color:reset}
+        %{message}', CORE_PEER_TLS_ENABLED=false, ORDERER_CA=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/msp/tlscacerts/tlsca.xxx.com-cert.pem,
+      APP_CHANNEL=xxx, TIMEOUT=30, MAX_RETRY=5, 'GEN_IMG=yeasy/hyperledger-fabric:1.1.0',
+      GEN_CONTAINER=generator, FABRIC_CFG_PATH=/etc/hyperledger/fabric, CHANNEL_ARTIFACTS=channel-artifacts,
+      CRYPTO_CONFIG=crypto-config, APP_CHANNEL_TX=xxx.tx, ARCH=x86_64, BASE_IMG_TAG=0.4.6,
+      FABRIC_IMG_TAG=1.1.0, PROJECT_VERSION=1.1.0, 'CTL_IMG=yeasy/hyperledger-fabric:1.1.0',
+      CTL_CONTAINER=configtxlator, 'CTL_BASE_URL=http://127.0.0.1:7059', 'CTL_ENCODE_URL=http://127.0.0.1:7059/protolator/encode',
+      'CTL_DECODE_URL=http://127.0.0.1:7059/protolator/decode', 'CTL_COMPARE_URL=http://127.0.0.1:7059/configtxlator/compute/update-from-configs',
+      ORDERER_TLS_CA=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/msp/tlscacerts/tlsca.xxx.com-cert.pem,
+      ORDERER_MSP=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/msp,
+      ORDERER_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/tls/ca.crt,
+      ORDERER_ADMIN_MSP=/etc/hyperledger/fabric/crypto-config/ordererOrganizations/xxx.com/users/Admin@xxx.com/msp,
+      'ORDERER_URL=orderer.xxx.com:7050', ORDERER_GENESIS=orderer.genesis.block, ORG1_PEER1_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.xxx.com/peers/peer1.org1.xxx.com/tls/ca.crt,
+      'ORG1_PEER1_URL=peer1.org1.xxx.com:7051', ORG1_PEER0_TLS_ROOTCERT=/etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.xxx.com/peers/peer0.org1.xxx.com/tls/ca.crt,
+      'ORG1_PEER0_URL=peer0.org1.xxx.com:7051', ORG1_ADMIN_MSP=/etc/hyperledger/fabric/crypto-config/peerOrganizations/org1.xxx.com/users/Admin@org1.xxx.com/msp,
+      ORG1MSP=Org1MSP, UPDATE_ANCHOR_ORG1_TX=Org1MSPanchors.tx, CHANNEL_CREATE_ORG=org1,
+      CHANNEL_CREATE_PEER=peer0, ORDERER_PROFILE=TwoOrgsOrdererGenesis, ORGS=org1,
+      'ORG1=peer0,peer1']
+    hostname: cli
+    image: foodchainbaas/fabric-tools:chainfood-1.1
+    restart: always
+    tty: true
+    volumes: ['${COMPOSE_PROJECT_PATH}/scripts:/tmp/scripts', '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config.yaml:/etc/hyperledger/fabric/crypto-config.yaml',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config:/etc/hyperledger/fabric/crypto-config',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/configtx.yaml:/etc/hyperledger/fabric/configtx.yaml',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/channel-artifacts:/tmp/channel-artifacts']
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+  orderer.xxx.com:
+    command: orderer
+    container_name: 8b4834e196ed4f0680c649896d888609_orderer
+    environment: [ORDERER_GENERAL_LOGLEVEL=DEBUG, ORDERER_GENERAL_LISTENADDRESS=0.0.0.0,
+      ORDERER_GENERAL_GENESISMETHOD=file, ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block,
+      ORDERER_GENERAL_LOCALMSPID=OrdererMSP, ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp,
+      ORDERER_GENERAL_TLS_ENABLED=false, ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key,
+      ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt, 'ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]']
+    external_links: [peer1.org1.xxx.com, peer0.org1.xxx.com]
+    image: hyperledger/fabric-orderer:1.1.0
+    ports: ['${ORDERER_PORT}:7050']
+    restart: always
+    volumes: ['${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/channel-artifacts/orderer.genesis.block:/var/hyperledger/orderer/orderer.genesis.block',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/msp:/var/hyperledger/orderer/msp',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/ordererOrganizations/xxx.com/orderers/orderer.xxx.com/tls/:/var/hyperledger/orderer/tls']
+  peer0.org1.xxx.com:
+    command: peer node start
+    container_name: 8b4834e196ed4f0680c649896d888609_peer0_org1
+    depends_on: &id001 [orderer.xxx.com]
+    environment: [CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=8b4834e196ed4f0680c649896d888609_default,
+      CORE_LOGGING_LEVEL=DEBUG, CORE_PEER_GOSSIP_USELEADERELECTION=true, CORE_PEER_GOSSIP_ORGLEADER=false,
+      CORE_PEER_GOSSIP_SKIPHANDSHAKE=true, CORE_PEER_TLS_ENABLED=false, CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt,
+      CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key, CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt,
+      CORE_VM_DOCKER_HOSTCONFIG_MEMORY=268435456, CORE_PEER_ID=peer0.org1.xxx.com,
+      CORE_PEER_LOCALMSPID=Org1MSP, 'CORE_PEER_ADDRESS=peer0.org1.xxx.com:7051']
+    image: foodchainbaas/fabric-peer:chainfood-1.1
+    ports: ['7050:7051', '7150:7053']
+    restart: always
+    volumes: ['/var/run/docker.sock:/var/run/docker.sock', '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/peerOrganizations/org1.xxx.com/peers/peer0.org1.xxx.com/msp:/etc/hyperledger/fabric/msp',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/peerOrganizations/org1.xxx.com/peers/peer0.org1.xxx.com/tls:/etc/hyperledger/fabric/tls']
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+  peer1.org1.xxx.com:
+    command: peer node start
+    container_name: 8b4834e196ed4f0680c649896d888609_peer1_org1
+    depends_on: *id001
+    environment: [CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=8b4834e196ed4f0680c649896d888609_default,
+      CORE_LOGGING_LEVEL=DEBUG, CORE_PEER_GOSSIP_USELEADERELECTION=true, CORE_PEER_GOSSIP_ORGLEADER=false,
+      CORE_PEER_GOSSIP_SKIPHANDSHAKE=true, CORE_PEER_TLS_ENABLED=false, CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt,
+      CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key, CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt,
+      CORE_VM_DOCKER_HOSTCONFIG_MEMORY=268435456, CORE_PEER_ID=peer1.org1.xxx.com,
+      CORE_PEER_LOCALMSPID=Org1MSP, 'CORE_PEER_ADDRESS=peer1.org1.xxx.com:7051']
+    image: foodchainbaas/fabric-peer:chainfood-1.1
+    ports: ['7250:7051', '7350:7053']
+    restart: always
+    volumes: ['/var/run/docker.sock:/var/run/docker.sock', '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/peerOrganizations/org1.xxx.com/peers/peer1.org1.xxx.com/msp:/etc/hyperledger/fabric/msp',
+      '${COMPOSE_PROJECT_PATH}/8b4834e196ed4f0680c649896d888609/crypto-config/peerOrganizations/org1.xxx.com/peers/peer1.org1.xxx.com/tls:/etc/hyperledger/fabric/tls']
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+version: '3.2'
