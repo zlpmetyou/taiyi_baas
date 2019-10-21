@@ -67,7 +67,7 @@ texttable==0.9.1
 urllib3==1.23
 vine==1.1.4
 websocket-client==0.53.0
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 WTForms==2.2.1
 xpinyin==0.5.6
 yunpian-python-sdk==1.0.0
