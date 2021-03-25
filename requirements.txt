@@ -56,7 +56,7 @@ python-engineio==2.2.0
 python-socketio==2.0.0
 pytz==2018.5
 pyvmomi==6.5
-PyYAML==3.13
+PyYAML==5.4
 redis==2.10.6
 requests==2.13.0
 requests-oauthlib==1.0.0
