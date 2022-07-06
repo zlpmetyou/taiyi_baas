@@ -38,7 +38,7 @@ Jinja2==2.10
 jsonschema==2.6.0
 kombu==4.2.1
 kubernetes==5.0.0
-lxml==4.2.5
+lxml==4.9.1
 MarkupSafe==1.0
 marshmallow==2.14.0
 mongoengine==0.13.0
